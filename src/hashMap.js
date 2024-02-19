@@ -1,5 +1,8 @@
 const HashMap = () => {
-  let buckets;
+  const buckets = new Array(16);
+  const LOAD_FACTOR = 0.75;
+
+  const node = (key, value, next = null) => ({ key, value, next });
 
   const hash = (key) => {
     let hashCode = 0;
@@ -13,11 +16,52 @@ const HashMap = () => {
     return hashCode;
   };
 
-  const set = (key, value) => {
-    const index = hashCode(key);
+  const calculateLoadFactor = () => {
+    const itemsAmount = buckets.filter((item) => item.key).reduce((acc, curr) => {
+      let currentNode = curr;
+      let accumulator = acc;
+      while (currentNode) {
+        if (currentNode.key) accumulator += 1;
+        currentNode = currentNode.next;
+      }
+      return accumulator;
+    }, 0);
 
-    if (index < 0 || index >= buckets.length) {
-      throw new Error('Trying to access index out of bound');
+    return itemsAmount / buckets.length;
+  };
+
+  const get = (key) => {
+    const index = hash(key);
+  };
+
+  const set = (key, value) => {
+    const index = hash(key);
+    const currentBucket = buckets[index];
+    if (currentBucket && currentBucket.key === key) {
+      currentBucket.value = value;
+    } else if (currentBucket && currentBucket.key !== key) {
+      currentBucket.next = node(key, value);
+    } else {
+      buckets[index] = node(key, value);
     }
   };
+
+  return {
+    node, set, get, buckets, calculateLoadFactor,
+  };
 };
+
+const hashMap = HashMap();
+hashMap.set('mario', 'is good');
+hashMap.set('luigi', 'is also good');
+hashMap.set('salam', 'is also good');
+hashMap.set('john', 'is also good');
+hashMap.set('john', 'is also good');
+hashMap.set('merry', 'is also good');
+hashMap.set('john', 'is also good');
+hashMap.set('john', 'is also good');
+hashMap.set('solo', 'is also good');
+hashMap.set('mdzhuq', 'is also good');
+hashMap.set('satesate', 'is also good');
+hashMap.set('john', 'is also good');
+console.log(hashMap.calculateLoadFactor());
