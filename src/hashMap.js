@@ -30,9 +30,7 @@ const HashMap = () => {
     return itemsAmount / buckets.length;
   };
 
-  const get = (key) => {
-    const index = hash(key);
-  };
+  const get = (key) => buckets[hash(key)]?.value || null;
 
   const set = (key, value) => {
     const index = hash(key);
@@ -56,12 +54,9 @@ hashMap.set('mario', 'is good');
 hashMap.set('luigi', 'is also good');
 hashMap.set('salam', 'is also good');
 hashMap.set('john', 'is also good');
-hashMap.set('john', 'is also good');
-hashMap.set('merry', 'is also good');
-hashMap.set('john', 'is also good');
-hashMap.set('john', 'is also good');
-hashMap.set('solo', 'is also good');
-hashMap.set('mdzhuq', 'is also good');
-hashMap.set('satesate', 'is also good');
-hashMap.set('john', 'is also good');
-console.log(hashMap.calculateLoadFactor());
+hashMap.set('salam', 'is awaiting something');
+hashMap.set('sami', 'is ok');
+hashMap.set('john', 'is feeling thirsty');
+hashMap.set('salam', 'can\'t wait no more');
+
+console.log(hashMap.get('john'));
