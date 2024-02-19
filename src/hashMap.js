@@ -30,18 +30,23 @@ const HashMap = () => {
     return itemsAmount / buckets.length;
   };
 
-  const get = (key, currentNode = buckets[hash(key)]) => {
+  const getNode = (key, currentNode = buckets[hash(key)]) => {
     if (!currentNode) return null;
-    if (key === currentNode.key) return currentNode.value;
-    if (currentNode.next) return get(key, currentNode.next);
+    if (key === currentNode.key) return currentNode;
+    if (currentNode.next) return getNode(key, currentNode.next);
     return null;
   };
 
-  const has = (key, currentNode = buckets[hash(key)]) => {
+  const get = (key) => {
+    const currentNode = getNode(key);
+    if (!currentNode) return null;
+    return currentNode.value;
+  };
+
+  const has = (key) => {
+    const currentNode = getNode(key);
     if (!currentNode) return false;
-    if (key === currentNode.key) return true;
-    if (currentNode.next) return has(key, currentNode.next);
-    return false;
+    return true;
   };
 
   const set = (key, value) => {
@@ -54,6 +59,10 @@ const HashMap = () => {
     } else {
       buckets[index] = node(key, value);
     }
+  };
+
+  const remove = (key) => {
+
   };
 
   return {
@@ -71,5 +80,6 @@ hashMap.set('samson', 'is awaiting something');
 hashMap.set('sami', 'is ok');
 hashMap.set('cmtdandebor', 'is feeling thirsty');
 hashMap.set('salam', 'can\'t wait no more');
+hashMap.set('jeremy', 'Star align is the best game ever done on roblox');
 
-console.log(hashMap.has('john'));
+console.log(hashMap.get('jeremy'));
