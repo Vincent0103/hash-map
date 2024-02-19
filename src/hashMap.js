@@ -4,7 +4,7 @@ const HashMap = () => {
 
   const node = (key, data, next = null) => ({ key, data, next });
 
-  function hash(key) {
+  const hash = (key) => {
     let hashCode = 0;
 
     const primeNumber = 31;
@@ -14,9 +14,9 @@ const HashMap = () => {
     }
 
     return hashCode;
-  }
+  };
 
-  function calculateLoadFactor() {
+  const calculateLoadFactor = () => {
     const itemsAmount = buckets.filter((item) => item?.key).reduce((acc, curr) => {
       let currentNode = curr;
       let accumulator = acc;
@@ -28,28 +28,28 @@ const HashMap = () => {
     }, 0);
 
     return itemsAmount;
-  }
+  };
 
-  function getNode(key, currentNode = buckets[hash(key)]) {
+  const getNode = (key, currentNode = buckets[hash(key)]) => {
     if (!currentNode) return null;
     if (key === currentNode.key) return currentNode;
     if (currentNode.next) return getNode(key, currentNode.next);
     return null;
-  }
+  };
 
-  function get(key) {
+  const get = (key) => {
     const currentNode = getNode(key);
     if (!currentNode) return null;
     return currentNode.value;
-  }
+  };
 
-  function has(key) {
+  const has = (key) => {
     const currentNode = getNode(key);
     if (!currentNode) return false;
     return true;
-  }
+  };
 
-  function set(key, value) {
+  const set = (key, value) => {
     const index = hash(key);
     let currentNode = buckets[index];
     if (!currentNode) {
@@ -68,10 +68,43 @@ const HashMap = () => {
       }
     }
     currentNode.next = node(key, value);
-  }
+  };
+
+  const remove = (key) => {
+    const index = hash(key);
+    let previousNode = null;
+    let currentNode = buckets[index];
+    if (!currentNode) return false;
+    if (currentNode.key === key) {
+      if (!currentNode.next) {
+        buckets[index] = null;
+        return true;
+      }
+      if (currentNode.next) {
+        buckets[index] = currentNode.next;
+        return true;
+      }
+    }
+
+    while (currentNode.next) {
+      previousNode = currentNode;
+      currentNode = currentNode.next;
+      if (currentNode.key === key) {
+        if (!currentNode.next) {
+          previousNode.next = null;
+          return true;
+        } if (currentNode.next) {
+          previousNode.next = currentNode.next;
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
 
   return {
-    node, set, get, has, buckets, calculateLoadFactor,
+    node, set, get, has, remove, buckets, calculateLoadFactor,
   };
 };
 
@@ -111,5 +144,4 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-console.log(hashMap.buckets);
-console.log(hashMap.calculateLoadFactor());
+console.log(hashMap.remove('jon'));
