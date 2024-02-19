@@ -30,7 +30,19 @@ const HashMap = () => {
     return itemsAmount / buckets.length;
   };
 
-  const get = (key) => buckets[hash(key)]?.value || null;
+  const get = (key, currentNode = buckets[hash(key)]) => {
+    if (!currentNode) return null;
+    if (key === currentNode.key) return currentNode.value;
+    if (currentNode.next) return get(key, currentNode.next);
+    return null;
+  };
+
+  const has = (key, currentNode = buckets[hash(key)]) => {
+    if (!currentNode) return false;
+    if (key === currentNode.key) return true;
+    if (currentNode.next) return has(key, currentNode.next);
+    return false;
+  };
 
   const set = (key, value) => {
     const index = hash(key);
@@ -45,18 +57,19 @@ const HashMap = () => {
   };
 
   return {
-    node, set, get, buckets, calculateLoadFactor,
+    node, set, get, has, buckets, calculateLoadFactor,
   };
 };
 
 const hashMap = HashMap();
 hashMap.set('mario', 'is good');
 hashMap.set('luigi', 'is also good');
-hashMap.set('salam', 'is also good');
+hashMap.set('jehrek', 'is also good');
 hashMap.set('john', 'is also good');
-hashMap.set('salam', 'is awaiting something');
+hashMap.set('berek', 'is awaiting something');
+hashMap.set('samson', 'is awaiting something');
 hashMap.set('sami', 'is ok');
-hashMap.set('john', 'is feeling thirsty');
+hashMap.set('cmtdandebor', 'is feeling thirsty');
 hashMap.set('salam', 'can\'t wait no more');
 
-console.log(hashMap.get('john'));
+console.log(hashMap.has('john'));
