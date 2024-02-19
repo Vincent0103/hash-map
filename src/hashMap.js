@@ -27,7 +27,7 @@ const HashMap = () => {
       return accumulator;
     }, 0);
 
-    return itemsAmount;
+    return itemsAmount / buckets.length;
   };
 
   const getNode = (key, currentNode = buckets[hash(key)]) => {
@@ -52,22 +52,21 @@ const HashMap = () => {
   const set = (key, value) => {
     const index = hash(key);
     let currentNode = buckets[index];
-    if (!currentNode) {
-      buckets[index] = node(key, value);
-      return;
-    }
-    if (currentNode.key === key) {
-      currentNode.value = value;
-      return;
-    }
-    while (currentNode.next) {
-      currentNode = currentNode.next;
-      if (currentNode.key === key) {
-        currentNode.value = value;
-        return;
+    if (!currentNode) buckets[index] = node(key, value);
+    else {
+      while (currentNode) {
+        if (currentNode.key === key) {
+          currentNode.value = value;
+          break;
+        }
+        if (!currentNode.next) {
+          currentNode.next = node(key, value);
+          break;
+        }
+        currentNode = currentNode.next;
       }
     }
-    currentNode.next = node(key, value);
+    if (calculateLoadFactor() >= LOAD_FACTOR) buckets.length *= 2;
   };
 
   const remove = (key) => {
@@ -144,4 +143,5 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-console.log(hashMap.remove('jon'));
+console.log(hashMap.buckets);
+console.log(hashMap.has('eloise'));
