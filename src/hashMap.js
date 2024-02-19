@@ -16,19 +16,17 @@ const HashMap = () => {
     return hashCode;
   };
 
-  const calculateLoadFactor = () => {
-    const itemsAmount = buckets.filter((item) => item?.key).reduce((acc, curr) => {
-      let currentNode = curr;
-      let accumulator = acc;
-      while (currentNode) {
-        if (currentNode.key) accumulator += 1;
-        currentNode = currentNode.next;
-      }
-      return accumulator;
-    }, 0);
+  const length = () => buckets.filter((item) => item?.key).reduce((acc, curr) => {
+    let currentNode = curr;
+    let accumulator = acc;
+    while (currentNode) {
+      if (currentNode.key) accumulator += 1;
+      currentNode = currentNode.next;
+    }
+    return accumulator;
+  }, 0);
 
-    return itemsAmount / buckets.length;
-  };
+  const calculateLoadFactor = () => length() / buckets.length;
 
   const getNode = (key, currentNode = buckets[hash(key)]) => {
     if (!currentNode) return null;
@@ -144,4 +142,3 @@ hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
 console.log(hashMap.buckets);
-console.log(hashMap.has('eloise'));
