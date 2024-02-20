@@ -91,8 +91,21 @@ const HashMap = () => {
     buckets[index] = null;
   });
 
+  const keys = () => {
+    let currentNode;
+    const bucketKeys = [];
+    buckets.forEach((item) => {
+      currentNode = item;
+      while (currentNode) {
+        if (currentNode?.key) bucketKeys.push(currentNode.key);
+        currentNode = currentNode.next;
+      }
+    });
+    return bucketKeys;
+  };
+
   return {
-    get, set, has, remove, length, clear, buckets,
+    get, set, has, remove, length, clear, keys, buckets,
   };
 };
 
@@ -132,5 +145,4 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-hashMap.clear();
-console.log(hashMap.buckets);
+console.log(hashMap.length());
