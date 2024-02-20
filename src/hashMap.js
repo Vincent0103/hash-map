@@ -1,16 +1,17 @@
 const HashMap = () => {
   const buckets = new Array(16).fill(null);
   const LOAD_FACTOR = 0.75;
+  const hadLengths = [buckets.length];
 
   const node = (key, value, next = null) => ({ key, value, next });
 
-  const hash = (key) => {
+  const hash = (key, bucketLength = buckets.length) => {
     let hashCode = 0;
 
     const primeNumber = 31;
     for (let i = 0; i < key.length; i += 1) {
       hashCode = primeNumber * hashCode + key.charCodeAt(i);
-      if (hashCode > buckets.length) hashCode %= buckets.length;
+      if (hashCode > bucketLength) hashCode %= bucketLength;
     }
 
     return hashCode;
@@ -28,23 +29,53 @@ const HashMap = () => {
 
   const calculateLoadFactor = () => length() / buckets.length;
 
-  const getNode = (key) => buckets.find((item) => {
-    let currentItem = item;
-    while (currentItem) {
-      if (key === currentItem.key) return true;
-      currentItem = currentItem.next;
-    }
-    return false;
-  }) || null;
+  const getIndex = (key) => {
+    let index;
+    let currentNode;
+    let foundIndex = null;
+    hadLengths.forEach((bucketLength) => {
+      index = hash(key, bucketLength);
+      currentNode = buckets[index];
+      while (currentNode) {
+        if (key === currentNode.key) {
+          foundIndex = index;
+          return;
+        }
+        currentNode = currentNode.next;
+      }
+    });
+    return foundIndex;
+  };
 
-  const getPastNode = (key) => buckets.find((item) => {
-    let currentItem = item;
-    while (currentItem && currentItem.next) {
-      if (currentItem.next && key === currentItem.next.key) return true;
-      currentItem = currentItem.next;
-    }
-    return false;
-  }) || null;
+  const getNode = (key) => {
+    let foundItem = null;
+    buckets.filter((item) => item?.key).forEach((item) => {
+      let currentItem = item;
+      while (currentItem) {
+        if (key === currentItem.key) {
+          foundItem = currentItem;
+          break;
+        }
+        currentItem = currentItem.next;
+      }
+    });
+    return foundItem;
+  };
+
+  const getPastNode = (key) => {
+    let foundItem = null;
+    buckets.filter((item) => item?.key).forEach((item) => {
+      let currentItem = item;
+      while (currentItem && currentItem.next) {
+        if (currentItem.next && key === currentItem.next.key) {
+          foundItem = currentItem;
+          break;
+        }
+        currentItem = currentItem.next;
+      }
+    });
+    return foundItem;
+  };
 
   const get = (key) => {
     const currentNode = getNode(key);
@@ -77,39 +108,28 @@ const HashMap = () => {
       }
     }
     if (calculateLoadFactor() >= LOAD_FACTOR) {
+      hadLengths.push(buckets.length * 2);
       new Array(buckets.length).fill(null).forEach((item) => buckets.push(item));
     }
   };
 
   const remove = (key) => {
-    const index = hash(key);
+    const index = getIndex(key);
     if (index < 0 || index >= buckets.length) throw new Error('Trying to access index out of bound');
-    let previousNode = null;
-    let currentNode = buckets[index];
+    const previousNode = getPastNode(key);
+    const currentNode = previousNode?.next || getNode(key);
     if (!currentNode) return false;
-    if (currentNode.key === key) {
-      if (!currentNode.next) {
-        buckets[index] = null;
-        return true;
-      }
-      if (currentNode.next) {
-        buckets[index] = currentNode.next;
-        return true;
-      }
+    if (!previousNode && currentNode) {
+      buckets[index] = null;
+      return true;
     }
-
-    while (currentNode.next) {
-      previousNode = currentNode;
-      currentNode = currentNode.next;
-      if (currentNode.key === key) {
-        if (!currentNode.next) {
-          previousNode.next = null;
-          return true;
-        } if (currentNode.next) {
-          previousNode.next = currentNode.next;
-          return true;
-        }
-      }
+    if (previousNode && !currentNode.next) {
+      previousNode.next = null;
+      return true;
+    }
+    if (previousNode && currentNode.next) {
+      previousNode.next = currentNode.next;
+      return true;
     }
 
     return false;
@@ -118,7 +138,7 @@ const HashMap = () => {
   const clear = () => buckets.filter((item) => item?.key).forEach((item) => remove(item.key));
 
   return {
-    get, set, has, remove, length, buckets, clear,
+    get, set, has, remove, length, clear, buckets,
   };
 };
 
@@ -158,5 +178,4 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-// hashMap.clear();
 console.log(hashMap.buckets);
