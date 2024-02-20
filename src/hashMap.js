@@ -31,11 +31,20 @@ const HashMap = () => {
   const getNode = (key) => buckets.find((item) => {
     let currentItem = item;
     while (currentItem) {
-      if (key === currentItem.key) return currentItem;
+      if (key === currentItem.key) return true;
       currentItem = currentItem.next;
     }
-    return null;
-  });
+    return false;
+  }) || null;
+
+  const getPastNode = (key) => buckets.find((item) => {
+    let currentItem = item;
+    while (currentItem && currentItem.next) {
+      if (currentItem.next && key === currentItem.next.key) return true;
+      currentItem = currentItem.next;
+    }
+    return false;
+  }) || null;
 
   const get = (key) => {
     const currentNode = getNode(key);
@@ -149,4 +158,5 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-console.log(hashMap.get('felicity'));
+// hashMap.clear();
+console.log(hashMap.buckets);
