@@ -67,7 +67,6 @@ const HashMap = () => {
 
   const remove = (key) => {
     const index = getIndex(key, buckets, hash, hadLengths);
-    if (index < 0 || index >= buckets.length) throw new Error('Trying to access index out of bound');
     const previousNode = getPastNode(key, buckets);
     const currentNode = previousNode?.next || getNode(key, buckets);
     if (!currentNode) return false;
@@ -87,7 +86,10 @@ const HashMap = () => {
     return false;
   };
 
-  const clear = () => buckets.filter((item) => item?.key).forEach((item) => remove(item.key));
+  const clear = () => buckets.filter((item) => item?.key).forEach((item) => {
+    const index = getIndex(item.key, buckets, hash, hadLengths);
+    buckets[index] = null;
+  });
 
   return {
     get, set, has, remove, length, clear, buckets,
@@ -130,4 +132,5 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
+hashMap.clear();
 console.log(hashMap.buckets);
