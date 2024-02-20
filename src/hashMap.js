@@ -1,5 +1,5 @@
 import {
-  node, calculateLoadFactor, getIndex, getNode, getPastNode,
+  node, calculateLoadFactor, getIndex, getNode, getPastNode, getAllNodes,
 } from './utils.js';
 
 const HashMap = () => {
@@ -91,21 +91,11 @@ const HashMap = () => {
     buckets[index] = null;
   });
 
-  const keys = () => {
-    let currentNode;
-    const bucketKeys = [];
-    buckets.forEach((item) => {
-      currentNode = item;
-      while (currentNode) {
-        if (currentNode?.key) bucketKeys.push(currentNode.key);
-        currentNode = currentNode.next;
-      }
-    });
-    return bucketKeys;
-  };
+  const keys = () => getAllNodes(buckets).map((item) => item.key);
+  const values = () => getAllNodes(buckets).map((item) => item.value);
 
   return {
-    get, set, has, remove, length, clear, keys, buckets,
+    get, set, has, remove, length, clear, keys, values, buckets,
   };
 };
 
@@ -145,4 +135,5 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-console.log(hashMap.length());
+console.log(hashMap.keys());
+console.log(hashMap.values());

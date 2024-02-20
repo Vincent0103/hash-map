@@ -50,6 +50,19 @@ const getPastNode = (key, buckets) => {
   return foundItem;
 };
 
+const getAllNodes = (buckets) => {
+  let currentNode;
+  const nodes = [];
+  buckets.forEach((item) => {
+    currentNode = item;
+    while (currentNode) {
+      if (currentNode?.key) nodes.push(currentNode);
+      currentNode = currentNode.next;
+    }
+  });
+  return nodes;
+};
+
 export {
-  node, calculateLoadFactor, getIndex, getNode, getPastNode,
+  node, calculateLoadFactor, getIndex, getNode, getPastNode, getAllNodes,
 };
