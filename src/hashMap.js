@@ -96,42 +96,8 @@ const HashMap = () => {
   const entries = () => getAllNodes(buckets).map((item) => [item.key, item.value]);
 
   return {
-    get, set, has, remove, length, clear, keys, values, entries, buckets,
+    get, set, has, remove, length, clear, keys, values, entries,
   };
 };
 
-const hashMap = HashMap();
-hashMap.set('mario', 'is good');
-hashMap.set('luigi', 'is also good');
-hashMap.set('john', 'is also good');
-hashMap.set('jehrek', 'is also good');
-hashMap.set('berek', 'is awaiting something');
-hashMap.set('samson', 'is awaiting something');
-hashMap.set('sami', 'is ok');
-hashMap.set('cmtdandebor', 'is feeling thirsty');
-hashMap.set('salam', 'can\'t wait no more');
-hashMap.set('jeremy', 'Star align is the best game ever done on roblox');
-hashMap.set('sarah', 'Star align is the best game ever done on roblox');
-hashMap.set('eloise', 'ok bro');
-hashMap.set('nathan', 'lipsum orelum');
-hashMap.set('layboy', 'such legacy can\'t exist');
-hashMap.set('felicity', 'i love drawing');
-hashMap.set('solomon', 'everytime someone call me saumon i speak french');
-hashMap.set('greek', 'not roman');
-hashMap.set('Yousouf', 'AAAARGGGHHH');
-hashMap.set('dayumTheGreatest', 'When i smile, it\'s a bad sign 👹');
-hashMap.set('carti', 'if i\'m a b* im the baddest b*');
-hashMap.set('mightyKingdom', 'i\'m glorious');
-hashMap.set('luffy', 'orewa Monkey D. Luffy');
-hashMap.set('todoum', 'loudoum');
-hashMap.set('sachiburidana', 'mugiwara');
-hashMap.set('todou', 'loudou');
-hashMap.set('sachiburiana', 'mugiwaa');
-hashMap.set('todo', 'loudo');
-hashMap.set('sachiburian', 'mugiwa');
-hashMap.set('tod', 'loud');
-hashMap.set('sachiburia', 'mugiw');
-hashMap.set('to', 'lou');
-hashMap.set('sachiburi', 'mugi');
-hashMap.set('fecity', 'i love dring');
-hashMap.set('solom', 'i speak french');
+export default HashMap;
