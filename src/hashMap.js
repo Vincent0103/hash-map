@@ -93,9 +93,10 @@ const HashMap = () => {
 
   const keys = () => getAllNodes(buckets).map((item) => item.key);
   const values = () => getAllNodes(buckets).map((item) => item.value);
+  const entries = () => getAllNodes(buckets).map((item) => [item.key, item.value]);
 
   return {
-    get, set, has, remove, length, clear, keys, values, buckets,
+    get, set, has, remove, length, clear, keys, values, entries, buckets,
   };
 };
 
@@ -135,5 +136,4 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-console.log(hashMap.keys());
-console.log(hashMap.values());
+console.log(hashMap.entries());
