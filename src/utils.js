@@ -1,4 +1,7 @@
-const node = (key, value, next = null) => ({ key, value, next });
+const node = (key, value = false, next = null) => {
+  if (!value) return { key, next };
+  return { key, value, next };
+};
 
 const calculateLoadFactor = (buckets, length) => length() / buckets.length;
 
