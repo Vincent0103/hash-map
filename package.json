@@ -1,18 +1,9 @@
 {
-  "name": "my_package",
+  "name": "hash-map-implementation",
   "version": "1.0.0",
   "description": "",
   "private": true,
   "type": "module",
-  "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "build": "webpack --progress --mode=production",
-    "watch": "webpack --progress --watch",
-    "push-repo": "git subtree push --prefix dist origin gh-pages"
-  },
-  "jest": {
-    "transform": {}
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
