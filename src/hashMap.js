@@ -1,9 +1,11 @@
+import {
+  node, calculateLoadFactor, getIndex, getNode, getPastNode,
+} from './utils.js';
+
 const HashMap = () => {
   const buckets = new Array(16).fill(null);
   const LOAD_FACTOR = 0.75;
   const hadLengths = [buckets.length];
-
-  const node = (key, value, next = null) => ({ key, value, next });
 
   const hash = (key, bucketLength = buckets.length) => {
     let hashCode = 0;
@@ -27,64 +29,14 @@ const HashMap = () => {
     return accumulator;
   }, 0);
 
-  const calculateLoadFactor = () => length() / buckets.length;
-
-  const getIndex = (key) => {
-    let index;
-    let currentNode;
-    let foundIndex = null;
-    hadLengths.forEach((bucketLength) => {
-      index = hash(key, bucketLength);
-      currentNode = buckets[index];
-      while (currentNode) {
-        if (key === currentNode.key) {
-          foundIndex = index;
-          return;
-        }
-        currentNode = currentNode.next;
-      }
-    });
-    return foundIndex;
-  };
-
-  const getNode = (key) => {
-    let foundItem = null;
-    buckets.filter((item) => item?.key).forEach((item) => {
-      let currentItem = item;
-      while (currentItem) {
-        if (key === currentItem.key) {
-          foundItem = currentItem;
-          break;
-        }
-        currentItem = currentItem.next;
-      }
-    });
-    return foundItem;
-  };
-
-  const getPastNode = (key) => {
-    let foundItem = null;
-    buckets.filter((item) => item?.key).forEach((item) => {
-      let currentItem = item;
-      while (currentItem && currentItem.next) {
-        if (currentItem.next && key === currentItem.next.key) {
-          foundItem = currentItem;
-          break;
-        }
-        currentItem = currentItem.next;
-      }
-    });
-    return foundItem;
-  };
-
   const get = (key) => {
-    const currentNode = getNode(key);
+    const currentNode = getNode(key, buckets);
     if (!currentNode) return null;
     return currentNode.value;
   };
 
   const has = (key) => {
-    const currentNode = getNode(key);
+    const currentNode = getNode(key, buckets);
     if (!currentNode) return false;
     return true;
   };
@@ -107,17 +59,17 @@ const HashMap = () => {
         currentNode = currentNode.next;
       }
     }
-    if (calculateLoadFactor() >= LOAD_FACTOR) {
+    if (calculateLoadFactor(buckets, length) >= LOAD_FACTOR) {
       hadLengths.push(buckets.length * 2);
       new Array(buckets.length).fill(null).forEach((item) => buckets.push(item));
     }
   };
 
   const remove = (key) => {
-    const index = getIndex(key);
+    const index = getIndex(key, buckets, hash, hadLengths);
     if (index < 0 || index >= buckets.length) throw new Error('Trying to access index out of bound');
-    const previousNode = getPastNode(key);
-    const currentNode = previousNode?.next || getNode(key);
+    const previousNode = getPastNode(key, buckets);
+    const currentNode = previousNode?.next || getNode(key, buckets);
     if (!currentNode) return false;
     if (!previousNode && currentNode) {
       buckets[index] = null;
