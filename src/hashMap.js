@@ -2,7 +2,7 @@ const HashMap = () => {
   const buckets = new Array(16).fill(null);
   const LOAD_FACTOR = 0.75;
 
-  const node = (key, data, next = null) => ({ key, data, next });
+  const node = (key, value, next = null) => ({ key, value, next });
 
   const hash = (key) => {
     let hashCode = 0;
@@ -28,12 +28,14 @@ const HashMap = () => {
 
   const calculateLoadFactor = () => length() / buckets.length;
 
-  const getNode = (key, currentNode = buckets[hash(key)]) => {
-    if (!currentNode) return null;
-    if (key === currentNode.key) return currentNode;
-    if (currentNode.next) return getNode(key, currentNode.next);
+  const getNode = (key) => buckets.find((item) => {
+    let currentItem = item;
+    while (currentItem) {
+      if (key === currentItem.key) return currentItem;
+      currentItem = currentItem.next;
+    }
     return null;
-  };
+  });
 
   const get = (key) => {
     const currentNode = getNode(key);
@@ -49,6 +51,7 @@ const HashMap = () => {
 
   const set = (key, value) => {
     const index = hash(key);
+    if (index < 0 || index >= buckets.length) throw new Error('Trying to access index out of bound');
     let currentNode = buckets[index];
     if (!currentNode) buckets[index] = node(key, value);
     else {
@@ -64,11 +67,14 @@ const HashMap = () => {
         currentNode = currentNode.next;
       }
     }
-    if (calculateLoadFactor() >= LOAD_FACTOR) buckets.length *= 2;
+    if (calculateLoadFactor() >= LOAD_FACTOR) {
+      new Array(buckets.length).fill(null).forEach((item) => buckets.push(item));
+    }
   };
 
   const remove = (key) => {
     const index = hash(key);
+    if (index < 0 || index >= buckets.length) throw new Error('Trying to access index out of bound');
     let previousNode = null;
     let currentNode = buckets[index];
     if (!currentNode) return false;
@@ -100,8 +106,10 @@ const HashMap = () => {
     return false;
   };
 
+  const clear = () => buckets.filter((item) => item?.key).forEach((item) => remove(item.key));
+
   return {
-    node, set, get, has, remove, buckets, calculateLoadFactor,
+    get, set, has, remove, length, buckets, clear,
   };
 };
 
@@ -141,4 +149,4 @@ hashMap.set('sachiburi', 'mugi');
 hashMap.set('fecity', 'i love dring');
 hashMap.set('solom', 'i speak french');
 
-console.log(hashMap.buckets);
+console.log(hashMap.get('felicity'));
